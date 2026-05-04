@@ -1,0 +1,37 @@
+import React from 'react'
+import { Link, useNavigate } from 'react-router'
+import './css/adminnav.css'
+
+export default function AdminNAv() {
+
+    const navigate=useNavigate();
+
+    let user=JSON.parse(localStorage.getItem("userinfo"));
+
+
+let logout=()=>{
+    localStorage.removeItem("userinfo")
+    navigate("/registeruser")
+}
+    return (
+        <div>
+            <nav className="admin-nav">
+                <div className="nav-left">
+                    <div className="logo">🏟️ GroundBook Admin</div>
+                </div>
+
+                <ul className="nav-links">
+                    <li><Link to={"/addGrounds"}>Add Ground</Link></li>
+                    <li><Link to={"/manageGrounds"}>Manage Grounds</Link></li>
+                    <li><Link to={"/manageUsers"}>Manage Users</Link></li>
+                    <li>Bookings(Pending)</li>
+                    <li>Reports (Pending)</li>
+                </ul>
+
+                <div className="nav-right">
+                    <button className="logout-btn" onClick={logout}>Logout</button>
+                </div>
+            </nav>
+        </div>
+    )
+}

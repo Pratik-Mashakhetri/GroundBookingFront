@@ -1,0 +1,51 @@
+.admin-nav {
+  height: 70px;
+  width: 100%;
+  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.nav-links li a:hover {
+  color: #00e5ff;
+}
+
+.logout-btn {
+  padding: 8px 18px;
+  border: none;
+  background-color: #ff4d4d;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #e60000;
+}
