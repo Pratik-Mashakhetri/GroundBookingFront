@@ -9,7 +9,7 @@ export const MyBookings = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("userinfo");
 
     if (!storedUser) {
       alert("Please login first");
