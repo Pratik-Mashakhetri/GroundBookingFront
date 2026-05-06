@@ -25,7 +25,8 @@ let logout=()=>{
                     <li><Link to={"/manageGrounds"}>Manage Grounds</Link></li>
                     <li><Link to={"/manageUsers"}>Manage Users</Link></li>
                     <li>Bookings(Pending)</li>
-                    <li>Reports (Pending)</li>
+                    <li>Payments (Pending)</li>
+                     <li><Link to={"/admin-contact"}>Contact Msgs</Link></li>
                 </ul>
 
                 <div className="nav-right">

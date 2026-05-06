@@ -9,6 +9,11 @@ import { ManageUsers } from './ManageUsers';
 import { ManageGrounds } from './ManageGrounds';
 import { UpdateGround } from './UpdateGround';
 import { BookGround } from './BookGround';
+import { MyBookings } from './MyBookings';
+import { GroundDetails } from './GroundDetails';
+import AboutUs from './AboutUs';
+import ContactUs from './ContactUs';
+import AdminContact from './AdminContact';
 
 function App() {
   return (
@@ -25,6 +30,11 @@ function App() {
         <Route path='/manageGrounds' element={<ManageGrounds/>}></Route>
         <Route path="/update-ground/:id" element={<UpdateGround />} />
         <Route path='/bookground' element={<BookGround/>}></Route>
+        <Route path='/my-bookings' element={<MyBookings/>}></Route>
+        <Route path="/ground/:id" element={<GroundDetails />} />
+        <Route path='/about-us' element={<AboutUs/>}></Route>
+        <Route path='/contact-us' element={<ContactUs/>}></Route>
+        <Route path='/admin-contact' element={<AdminContact/>}></Route>
     
       </Routes>
       </BrowserRouter>

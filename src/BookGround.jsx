@@ -4,17 +4,38 @@ import { useNavigate } from "react-router-dom";
 import { UserNav } from "./UserNav";
 
 export const BookGround = () => {
+
   const [grounds, setGrounds] = useState([]);
   const [selectedGround, setSelectedGround] = useState(null);
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [availability, setAvailability] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchGrounds();
   }, []);
+
+  // ✅ Calculate Price
+  useEffect(() => {
+    if (startTime && endTime && selectedGround) {
+      const start = new Date(startTime);
+      const end = new Date(endTime);
+
+      const hours = (end - start) / (1000 * 60 * 60);
+
+      if (hours > 0) {
+        setTotalAmount(hours * selectedGround.pricePerHour);
+      } else {
+        setTotalAmount(0);
+      }
+    }
+  }, [startTime, endTime, selectedGround]);
 
   const fetchGrounds = () => {
     axios
@@ -23,31 +44,63 @@ export const BookGround = () => {
       .catch(() => alert("Error fetching grounds"));
   };
 
-  // ✅ OPEN MODAL
-  const openBooking = (ground) => {
+  // ✅ Open Modal + Fetch Booked Slots
+  const openBooking = async (ground) => {
     setSelectedGround(ground);
     setStartTime("");
     setEndTime("");
+    setAvailability("");
+
+    try {
+      const res = await axios.get(`http://localhost:8080/booking/ground/active/${ground.id}`)
+      setBookedSlots(res.data);
+    } catch {
+      console.log("Error fetching bookings");
+    }
   };
 
-  // ✅ CLOSE MODAL
   const closeModal = () => {
     setSelectedGround(null);
+    setAvailability("");
   };
 
-  // ✅ BOOK API CALL
+  // ✅ Check Availability API
+  const checkAvailability = async () => {
+    try {
+      if (!startTime || !endTime) {
+        alert("Select start and end time first");
+        return;
+      }
+
+      const res = await axios.get("http://localhost:8080/booking/check", {
+        params: {
+          groundId: selectedGround.id,
+          startTime,
+          endTime,
+        },
+      });
+
+      setAvailability(res.data);
+
+    } catch (err) {
+      console.error(err);
+      alert("Error checking availability");
+    }
+  };
+
+  // ✅ Booking API
   const handleBooking = async () => {
+    if (availability !== "AVAILABLE") {
+      alert("Please check availability first");
+      return;
+    }
+
     try {
       const user = JSON.parse(localStorage.getItem("user"));
 
       if (!user) {
         alert("Please login first");
         navigate("/login");
-        return;
-      }
-
-      if (!startTime || !endTime) {
-        alert("Please select time");
         return;
       }
 
@@ -58,12 +111,12 @@ export const BookGround = () => {
         endTime,
       };
 
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:8080/booking/create",
         bookingData
       );
 
-      alert(res.data);
+      alert("Booking Successful");
       closeModal();
 
     } catch (err) {
@@ -84,28 +137,15 @@ export const BookGround = () => {
             <div className="col-md-4 mb-4 d-flex" key={g.id}>
               <div className="card shadow w-100">
 
-                {/* CAROUSEL */}
+                {/* Carousel */}
                 {g.images && g.images.length > 0 ? (
-                  <div
-                    id={`carousel${g.id}`}
-                    className="carousel slide"
-                    data-bs-ride="carousel"
-                  >
-                    <div className="carousel-inner">
-                      {g.images.map((img, index) => (
-                        <div
-                          key={index}
-                          className={`carousel-item ${index === 0 ? "active" : ""}`}
-                        >
-                          <img
-                            src={`http://localhost:8080/images/${img}`}
-                            className="d-block w-100"
-                            style={{ height: "250px", objectFit: "cover" }}
-                            alt="ground"
-                          />
-                        </div>
-                      ))}
-                    </div>
+                  <div className="carousel-inner">
+                    <img
+                      src={`http://localhost:8080/images/${g.images[0]}`}
+                      className="d-block w-100"
+                      style={{ height: "250px", objectFit: "cover" }}
+                      alt="ground"
+                    />
                   </div>
                 ) : (
                   <img
@@ -116,7 +156,6 @@ export const BookGround = () => {
                   />
                 )}
 
-                {/* BODY */}
                 <div className="card-body">
                   <h5>{g.name}</h5>
                   <p>{g.location}</p>
@@ -129,6 +168,12 @@ export const BookGround = () => {
                   >
                     Book Now
                   </button>
+                  <button
+                    className="btn btn-primary w-100 mt-2"
+                    onClick={() => navigate(`/ground/${g.id}`)}
+                  >
+                    View Details
+                  </button>
                 </div>
 
               </div>
@@ -137,24 +182,24 @@ export const BookGround = () => {
         </div>
       </div>
 
-      {/* ✅ BOOKING MODAL */}
+      {/* MODAL */}
       {selectedGround && (
         <div className="modal show d-block" style={{ background: "rgba(0,0,0,0.6)" }}>
           <div className="modal-dialog">
             <div className="modal-content">
 
               <div className="modal-header">
-                <h5 className="modal-title">
-                  Book: {selectedGround.name}
-                </h5>
+                <h5>Book: {selectedGround.name}</h5>
                 <button className="btn-close" onClick={closeModal}></button>
               </div>
 
               <div className="modal-body">
+
                 <label>Start Time</label>
                 <input
                   type="datetime-local"
                   className="form-control mb-3"
+                  min={new Date().toISOString().slice(0, 16)}
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                 />
@@ -162,10 +207,51 @@ export const BookGround = () => {
                 <label>End Time</label>
                 <input
                   type="datetime-local"
-                  className="form-control"
+                  className="form-control mb-3"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                 />
+
+                {/* Price */}
+                <p>
+                  <strong>Total Price:</strong> ₹{totalAmount}
+                </p>
+
+                {/* Availability Button */}
+                <button
+                  className="btn btn-warning"
+                  onClick={checkAvailability}
+                >
+                  Check Availability
+                </button>
+
+                {/* Availability Result */}
+                {availability && (
+                  <p
+                    className={`mt-2 ${availability === "AVAILABLE"
+                        ? "text-success"
+                        : "text-danger"
+                      }`}
+                  >
+                    {availability}
+                  </p>
+                )}
+
+                {/* Booked Slots */}
+                <div className="mt-3">
+                  <h6>Booked Slots:</h6>
+                  {bookedSlots.length === 0 ? (
+                    <p>No bookings yet</p>
+                  ) : (
+                    bookedSlots.map((b, i) => (
+                      <div key={i} style={{ fontSize: "13px" }}>
+                        {new Date(b.startTime).toLocaleString()} →{" "}
+                        {new Date(b.endTime).toLocaleString()}
+                      </div>
+                    ))
+                  )}
+                </div>
+
               </div>
 
               <div className="modal-footer">
@@ -182,6 +268,7 @@ export const BookGround = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
