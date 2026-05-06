@@ -28,7 +28,10 @@
   border: none;
   cursor: pointer;
 }
-
+.search-box {
+  width: fit-content;   /* 🔥 prevents full width */
+  margin: 0 auto 20px auto;
+}
 .table-container {
   background: white;
   padding: 15px;

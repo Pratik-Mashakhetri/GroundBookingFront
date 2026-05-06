@@ -41,7 +41,7 @@ export const MyBookings = () => {
     try {
       await axios.put(`http://localhost:8080/booking/cancel/${bookingId}`);
 
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("userinfo"));
       fetchBookings(user.id);
 
     } catch (err) {
@@ -51,16 +51,20 @@ export const MyBookings = () => {
   };
 
   // ✅ Dynamic Status
-  const getDisplayStatus = (b) => {
-    const now = new Date();
-    const start = new Date(b.startTime);
-    const end = new Date(b.endTime);
+const getDisplayStatus = (b) => {
+  const now = new Date();
+  const start = new Date(b.startTime);
+  const end = new Date(b.endTime);
 
-    if (b.status === "CANCELLED") return "CANCELLED";
-    if (b.status === "COMPLETED") return "COMPLETED";
-    if (start < now && end > now) return "STARTED";
-    return "BOOKED";
-  };
+  // 🔴 backend override
+  if (b.status === "CANCELLED") return "CANCELLED";
+
+  // ✅ auto logic
+  if (end < now) return "COMPLETED";
+  if (start <= now && end >= now) return "STARTED";
+
+  return "BOOKED";
+};
 
   // ✅ Badge Color
   const getStatusColor = (b) => {
