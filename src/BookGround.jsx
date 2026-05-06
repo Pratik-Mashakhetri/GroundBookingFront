@@ -52,7 +52,7 @@ export const BookGround = () => {
     setAvailability("");
 
     try {
-      const res = await axios.get(`http://localhost:8080/booking/ground/active/${ground.id}`)
+      const res = await axios.get(`http://localhost:8080/booking/ground/active/${ground.id}`);
       setBookedSlots(res.data);
     } catch {
       console.log("Error fetching bookings");
@@ -69,6 +69,12 @@ export const BookGround = () => {
     try {
       if (!startTime || !endTime) {
         alert("Select start and end time first");
+        return;
+      }
+
+      // ✅ NEW VALIDATION
+      if (new Date(endTime) <= new Date(startTime)) {
+        alert("End time must be after start time");
         return;
       }
 
@@ -201,13 +207,17 @@ export const BookGround = () => {
                   className="form-control mb-3"
                   min={new Date().toISOString().slice(0, 16)}
                   value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
+                  onChange={(e) => {
+                    setStartTime(e.target.value);
+                    setEndTime(""); // ✅ reset end time
+                  }}
                 />
 
                 <label>End Time</label>
                 <input
                   type="datetime-local"
                   className="form-control mb-3"
+                  min={startTime || new Date().toISOString().slice(0, 16)} // ✅ FIX
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                 />
