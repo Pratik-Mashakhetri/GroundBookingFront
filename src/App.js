@@ -14,6 +14,7 @@ import { GroundDetails } from './GroundDetails';
 import AboutUs from './AboutUs';
 import ContactUs from './ContactUs';
 import AdminContact from './AdminContact';
+import { ManageBookings } from './ManageBookings';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path='/about-us' element={<AboutUs/>}></Route>
         <Route path='/contact-us' element={<ContactUs/>}></Route>
         <Route path='/admin-contact' element={<AdminContact/>}></Route>
+        <Route path='/manage-bookings' element={<ManageBookings/>}></Route>
     
       </Routes>
       </BrowserRouter>

@@ -51,20 +51,19 @@ export const MyBookings = () => {
   };
 
   // ✅ Dynamic Status
-const getDisplayStatus = (b) => {
-  const now = new Date();
-  const start = new Date(b.startTime);
-  const end = new Date(b.endTime);
+  const getDisplayStatus = (b) => {
+    const now = new Date();
 
-  // 🔴 backend override
-  if (b.status === "CANCELLED") return "CANCELLED";
+    const start = new Date(b.startTime.replace(" ", "T"));
+    const end = new Date(b.endTime.replace(" ", "T"));
 
-  // ✅ auto logic
-  if (end < now) return "COMPLETED";
-  if (start <= now && end >= now) return "STARTED";
+    if (b.status === "CANCELLED") return "CANCELLED";
+    if (b.status === "COMPLETED") return "COMPLETED";
 
-  return "BOOKED";
-};
+    if (start <= now && end >= now) return "STARTED";
+
+    return "BOOKED";
+  };
 
   // ✅ Badge Color
   const getStatusColor = (b) => {
@@ -130,6 +129,8 @@ const getDisplayStatus = (b) => {
         ) : (
           <div className="row">
             {bookings.map((b) => (
+          
+
               <div className="col-md-4 mb-4" key={b.id}>
                 <div className="card shadow h-100">
 
