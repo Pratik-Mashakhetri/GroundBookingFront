@@ -241,6 +241,7 @@ export const ManageBookings = () => {
               className="form-control"
               placeholder="Search by user or ground"
               value={search}
+              style={{ width: "300px" }}
               onChange={(e) => {
 
                 setSearch(e.target.value);

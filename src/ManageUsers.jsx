@@ -67,8 +67,10 @@ const ManageUsers = () => {
         <div className="search-box">
           <input
             type="text"
+            style={{ width: "500px" }}
             placeholder="Search user..."
             value={search}
+            
             onChange={(e) => setSearch(e.target.value)}
           />
           <button onClick={handleSearch}>Search</button>

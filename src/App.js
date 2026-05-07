@@ -1,11 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import Register from './Register';
-import { BrowserRouter, Route,Routes } from 'react-router';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AdminDash from './AdminDash';
 import UserDash from './UserDash';
 import AddGrounds from './AddGrounds';
-import  ManageUsers  from './ManageUsers';
+import ManageUsers from './ManageUsers';
 import { ManageGrounds } from './ManageGrounds';
 import { UpdateGround } from './UpdateGround';
 import { BookGround } from './BookGround';
@@ -15,32 +15,112 @@ import AboutUs from './AboutUs';
 import ContactUs from './ContactUs';
 import AdminContact from './AdminContact';
 import { ManageBookings } from './ManageBookings';
+import { ProtectedRoute } from './ProtectedRoutes';
 
 function App() {
   return (
     <div className="App">
 
       <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Register/>}></Route>
-        <Route path='/AdminDash' element={<AdminDash/>}></Route>
-        <Route path='/UserDash' element={<UserDash/>}></Route>
-        <Route path='/registerUser' element={<Register/>}></Route>
-        <Route path="/addGrounds" element={<AddGrounds/>}></Route>
-        <Route path='/manageUsers' element={<ManageUsers/>}></Route>
-        <Route path='/manageGrounds' element={<ManageGrounds/>}></Route>
-        <Route path="/update-ground/:id" element={<UpdateGround />} />
-        <Route path='/bookground' element={<BookGround/>}></Route>
-        <Route path='/my-bookings' element={<MyBookings/>}></Route>
-        <Route path="/ground/:id" element={<GroundDetails />} />
-        <Route path='/about-us' element={<AboutUs/>}></Route>
-        <Route path='/contact-us' element={<ContactUs/>}></Route>
-        <Route path='/admin-contact' element={<AdminContact/>}></Route>
-        <Route path='/manage-bookings' element={<ManageBookings/>}></Route>
-    
-      </Routes>
+        <Routes>
+          <Route
+            path='/AdminDash'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminDash />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/UserDash'
+            element={
+              <ProtectedRoute allowedRole="user">
+                <UserDash />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/addGrounds"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AddGrounds />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/manageUsers'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/manageGrounds'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <ManageGrounds />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/update-ground/:id"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <UpdateGround />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/manage-bookings'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <ManageBookings />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/admin-contact'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminContact />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/bookground'
+            element={
+              <ProtectedRoute allowedRole="user">
+                <BookGround />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/my-bookings'
+            element={
+              <ProtectedRoute allowedRole="user">
+                <MyBookings />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path='/' element={<Register />}></Route>
+          <Route path='/registerUser' element={<Register />}></Route>
+          <Route path="/ground/:id" element={<GroundDetails />} />
+          <Route path='/about-us' element={<AboutUs />}></Route>
+          <Route path='/contact-us' element={<ContactUs />}></Route>
+        </Routes>
       </BrowserRouter>
-     
+
 
     </div>
   );

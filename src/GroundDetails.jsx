@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserNav } from "./UserNav";
+import AdminNAv from "./AdminNAv";
 
 export const GroundDetails = () => {
 
@@ -9,6 +10,8 @@ export const GroundDetails = () => {
   const navigate = useNavigate();
 
   const [ground, setGround] = useState(null);
+
+  const user = JSON.parse(localStorage.getItem("userinfo"));
 
   useEffect(() => {
     fetchGround();
@@ -30,7 +33,7 @@ export const GroundDetails = () => {
 
   return (
     <div>
-      <UserNav />
+      {user?.role === "admin" ? <AdminNAv /> : <UserNav />}
 
       <div className="container mt-4">
 

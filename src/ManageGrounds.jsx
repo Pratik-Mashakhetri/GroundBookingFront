@@ -133,11 +133,10 @@ export const ManageGrounds = () => {
         <div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
 
           <button
-            className={`btn ${
-              filter === "ALL"
+            className={`btn ${filter === "ALL"
                 ? "btn-dark"
                 : "btn-outline-dark"
-            }`}
+              }`}
             style={{ width: "140px" }}
             onClick={() => setFilter("ALL")}
           >
@@ -145,11 +144,10 @@ export const ManageGrounds = () => {
           </button>
 
           <button
-            className={`btn ${
-              filter === "ACTIVE"
+            className={`btn ${filter === "ACTIVE"
                 ? "btn-success"
                 : "btn-outline-success"
-            }`}
+              }`}
             style={{ width: "140px" }}
             onClick={() => setFilter("ACTIVE")}
           >
@@ -157,11 +155,10 @@ export const ManageGrounds = () => {
           </button>
 
           <button
-            className={`btn ${
-              filter === "INACTIVE"
+            className={`btn ${filter === "INACTIVE"
                 ? "btn-secondary"
                 : "btn-outline-secondary"
-            }`}
+              }`}
             style={{ width: "140px" }}
             onClick={() => setFilter("INACTIVE")}
           >
@@ -221,9 +218,8 @@ export const ManageGrounds = () => {
 
                           <div
                             key={index}
-                            className={`carousel-item ${
-                              index === 0 ? "active" : ""
-                            }`}
+                            className={`carousel-item ${index === 0 ? "active" : ""
+                              }`}
                           >
 
                             <img
@@ -332,10 +328,22 @@ export const ManageGrounds = () => {
 
                     {/* ================= BUTTONS ================= */}
 
+                    {/* ================= BUTTONS ================= */}
+
                     <div className="mt-auto">
 
                       {/* TOP ROW */}
                       <div className="d-flex gap-2 mb-2">
+
+                        {/* VIEW DETAILS */}
+                        <button
+                          className="btn btn-primary flex-fill"
+                          onClick={() =>
+                            navigate(`/ground/${g.id}`)
+                          }
+                        >
+                          View Details
+                        </button>
 
                         {/* UPDATE */}
                         <button
@@ -346,6 +354,11 @@ export const ManageGrounds = () => {
                         >
                           Update
                         </button>
+
+                      </div>
+
+                      {/* SECOND ROW */}
+                      <div className="d-flex gap-2">
 
                         {/* ACTIVE / INACTIVE */}
                         {g.active ? (
@@ -372,17 +385,17 @@ export const ManageGrounds = () => {
 
                         )}
 
-                      </div>
+                        {/* HARD DELETE */}
+                        <button
+                          className="btn btn-danger flex-fill"
+                          onClick={() =>
+                            handleHardDelete(g.id)
+                          }
+                        >
+                          Hard Delete
+                        </button>
 
-                      {/* HARD DELETE */}
-                      <button
-                        className="btn btn-danger w-100"
-                        onClick={() =>
-                          handleHardDelete(g.id)
-                        }
-                      >
-                        Hard Delete
-                      </button>
+                      </div>
 
                     </div>
 

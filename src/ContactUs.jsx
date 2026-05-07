@@ -45,8 +45,8 @@ const ContactUs = () => {
 
                         <div className="info">
                             <p>📍 Pune, India</p>
-                            <p>📞 +91 9876543210</p>
-                            <p>📧 support@groundbooking.com</p>
+                            <p>📞 +91 987654321 (Dummy)</p>
+                            <p>📧 pratikmashakhetri.it@gmail.com</p>
                         </div>
 
                         <div className="map">
