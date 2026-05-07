@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserNav } from "./UserNav";
@@ -6,196 +6,585 @@ import { UserNav } from "./UserNav";
 export const MyBookings = () => {
 
   const [bookings, setBookings] = useState([]);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+
+  // ✅ PAGINATION
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const bookingsPerPage = 20;
+
   const navigate = useNavigate();
 
+  // ================= LOAD BOOKINGS =================
   useEffect(() => {
-    const storedUser = localStorage.getItem("userinfo");
+
+    const storedUser =
+      localStorage.getItem("userinfo");
 
     if (!storedUser) {
+
       alert("Please login first");
+
       navigate("/login");
+
       return;
     }
 
     const user = JSON.parse(storedUser);
+
     fetchBookings(user.id);
+
   }, []);
 
+  // ================= FETCH =================
   const fetchBookings = async (userId) => {
+
     try {
+
       const res = await axios.get(
         `http://localhost:8080/booking/user/${userId}`
       );
-      setBookings(res.data);
+
+      // Latest first
+      const sorted = [...res.data].sort(
+        (a, b) =>
+          new Date(b.startTime) -
+          new Date(a.startTime)
+      );
+
+      setBookings(sorted);
+
     } catch (err) {
+
       console.error(err);
+
       alert("Error fetching bookings");
     }
   };
 
-  // ✅ Cancel Booking
+  // ================= CANCEL =================
   const cancelBooking = async (bookingId) => {
-    const confirmCancel = window.confirm("Are you sure you want to cancel?");
+
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel?"
+    );
+
     if (!confirmCancel) return;
 
     try {
-      await axios.put(`http://localhost:8080/booking/cancel/${bookingId}`);
 
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+      await axios.put(
+        `http://localhost:8080/booking/cancel/${bookingId}`
+      );
+
+      const user = JSON.parse(
+        localStorage.getItem("userinfo")
+      );
+
       fetchBookings(user.id);
 
     } catch (err) {
+
       console.error(err);
-      alert(err.response?.data || "Cancel failed");
+
+      alert(
+        err.response?.data ||
+        "Cancel failed"
+      );
     }
   };
 
-  // ✅ Dynamic Status
+  // ================= STATUS =================
   const getDisplayStatus = (b) => {
+
     const now = new Date();
 
-    const start = new Date(b.startTime.replace(" ", "T"));
-    const end = new Date(b.endTime.replace(" ", "T"));
+    const start = new Date(b.startTime);
+    const end = new Date(b.endTime);
 
-    if (b.status === "CANCELLED") return "CANCELLED";
-    if (b.status === "COMPLETED") return "COMPLETED";
+    if (b.status === "CANCELLED") {
+      return "CANCELLED";
+    }
 
-    if (start <= now && end >= now) return "STARTED";
+    if (b.status === "COMPLETED") {
+      return "COMPLETED";
+    }
+
+    if (start <= now && end >= now) {
+      return "STARTED";
+    }
+
+    if (end < now) {
+      return "COMPLETED";
+    }
 
     return "BOOKED";
   };
 
-  // ✅ Badge Color
-  const getStatusColor = (b) => {
-    const status = getDisplayStatus(b);
+  // ================= BADGE =================
+  const getBadgeClass = (status) => {
 
     switch (status) {
-      case "CANCELLED":
-        return "bg-danger";        // 🔴
-      case "COMPLETED":
-        return "bg-primary";       // 🔵
-      case "STARTED":
-        return "bg-warning text-dark"; // 🟡
+
       case "BOOKED":
-        return "bg-success";       // 🟢
+        return "bg-success";
+
+      case "STARTED":
+        return "bg-warning text-dark";
+
+      case "COMPLETED":
+        return "bg-primary";
+
+      case "CANCELLED":
+        return "bg-danger";
+
       default:
         return "bg-secondary";
     }
   };
 
-  // ✅ Button Text
-  const getButtonText = (b) => {
-    const status = getDisplayStatus(b);
-
-    if (status === "CANCELLED") return "Cancelled";
-    if (status === "COMPLETED") return "Completed";
-    if (status === "STARTED") return "Started";
-    return "Cancel Booking";
-  };
-
-  // ✅ Button Style (🔥 THIS FIXES YOUR ISSUE)
-  const getButtonStyle = (b) => {
-    const status = getDisplayStatus(b);
+  // ================= BUTTON =================
+  const getButtonClass = (status) => {
 
     switch (status) {
-      case "CANCELLED":
-        return "btn btn-secondary"; // gray
-      case "COMPLETED":
-        return "btn btn-primary";   // blue
-      case "STARTED":
-        return "btn btn-warning text-dark"; // yellow
+
       case "BOOKED":
-        return "btn btn-danger";    // red
+        return "btn-danger";
+
+      case "STARTED":
+        return "btn-warning text-dark";
+
+      case "COMPLETED":
+        return "btn-primary";
+
+      case "CANCELLED":
+        return "btn-secondary";
+
       default:
-        return "btn btn-secondary";
+        return "btn-secondary";
     }
   };
 
-  // ✅ Disable logic
-  const isCancelDisabled = (b) => {
-    const status = getDisplayStatus(b);
-    return status !== "BOOKED";
+  // ================= CAN CANCEL =================
+  const canCancel = (b) => {
+    return getDisplayStatus(b) === "BOOKED";
   };
 
+  // ================= FILTER =================
+  const filteredBookings = useMemo(() => {
+
+    return bookings.filter((b) => {
+
+      const status =
+        getDisplayStatus(b);
+
+      const groundName =
+        b.ground?.name?.toLowerCase() || "";
+
+      const location =
+        b.ground?.location?.toLowerCase() || "";
+
+      const searchMatch =
+        groundName.includes(
+          search.toLowerCase()
+        ) ||
+        location.includes(
+          search.toLowerCase()
+        );
+
+      const statusMatch =
+        statusFilter === "ALL" ||
+        status === statusFilter;
+
+      return searchMatch && statusMatch;
+    });
+
+  }, [bookings, search, statusFilter]);
+
+  // ================= PAGINATION =================
+
+  const totalPages = Math.ceil(
+    filteredBookings.length / bookingsPerPage
+  );
+
+  const lastIndex =
+    currentPage * bookingsPerPage;
+
+  const firstIndex =
+    lastIndex - bookingsPerPage;
+
+  const currentBookings =
+    filteredBookings.slice(
+      firstIndex,
+      lastIndex
+    );
+
   return (
+
     <div>
+
       <UserNav />
 
       <div className="container mt-4">
-        <h2 className="text-center mb-4">My Bookings</h2>
 
-        {bookings.length === 0 ? (
-          <p className="text-center">No bookings found</p>
-        ) : (
-          <div className="row">
-            {bookings.map((b) => (
-          
+        {/* ================= HEADER ================= */}
 
-              <div className="col-md-4 mb-4" key={b.id}>
-                <div className="card shadow h-100">
+        <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
-                  {/* Image */}
-                  {b.ground?.images?.length > 0 ? (
-                    <img
-                      src={`http://localhost:8080/images/${b.ground.images[0]}`}
-                      className="card-img-top"
-                      style={{ height: "200px", objectFit: "cover" }}
-                      alt="ground"
-                    />
-                  ) : (
-                    <img
-                      src="https://via.placeholder.com/400x200"
-                      className="card-img-top"
-                      alt="no-img"
-                    />
-                  )}
+          <h2 className="mb-0">
+            My Bookings
+          </h2>
 
-                  {/* Body */}
-                  <div className="card-body d-flex flex-column">
+          {/* SEARCH */}
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by ground or location"
+            style={{ width: "300px" }}
+            value={search}
+            onChange={(e) => {
 
-                    <h5><strong>{b.ground?.name}</strong></h5>
-                    <p className="text-muted">{b.ground?.location}</p>
+              setSearch(e.target.value);
 
-                    <p>
-                      <strong>Start:</strong><br />
-                      {new Date(b.startTime).toLocaleString()}
-                    </p>
+              // reset page
+              setCurrentPage(1);
+            }}
+          />
 
-                    <p>
-                      <strong>End:</strong><br />
-                      {new Date(b.endTime).toLocaleString()}
-                    </p>
+        </div>
 
-                    <p>
-                      <strong>Total:</strong> ₹{b.totalAmount}
-                    </p>
+        {/* ================= FILTER BUTTONS ================= */}
 
-                    {/* Status */}
-                    <p>
-                      <strong>Status: </strong>
-                      <span className={`badge ${getStatusColor(b)}`}>
-                        {getDisplayStatus(b)}
-                      </span>
-                    </p>
+        <div className="d-flex gap-2 flex-wrap mb-4">
 
-                    {/* 🔥 BIG BUTTON FIXED */}
+          <button
+            className={`btn ${
+              statusFilter === "ALL"
+                ? "btn-dark"
+                : "btn-outline-dark"
+            }`}
+            onClick={() => {
+
+              setStatusFilter("ALL");
+              setCurrentPage(1);
+
+            }}
+          >
+            All
+          </button>
+
+          <button
+            className={`btn ${
+              statusFilter === "BOOKED"
+                ? "btn-success"
+                : "btn-outline-success"
+            }`}
+            onClick={() => {
+
+              setStatusFilter("BOOKED");
+              setCurrentPage(1);
+
+            }}
+          >
+            Booked
+          </button>
+
+          <button
+            className={`btn ${
+              statusFilter === "STARTED"
+                ? "btn-warning"
+                : "btn-outline-warning"
+            }`}
+            onClick={() => {
+
+              setStatusFilter("STARTED");
+              setCurrentPage(1);
+
+            }}
+          >
+            Started
+          </button>
+
+          <button
+            className={`btn ${
+              statusFilter === "COMPLETED"
+                ? "btn-primary"
+                : "btn-outline-primary"
+            }`}
+            onClick={() => {
+
+              setStatusFilter("COMPLETED");
+              setCurrentPage(1);
+
+            }}
+          >
+            Completed
+          </button>
+
+          <button
+            className={`btn ${
+              statusFilter === "CANCELLED"
+                ? "btn-danger"
+                : "btn-outline-danger"
+            }`}
+            onClick={() => {
+
+              setStatusFilter("CANCELLED");
+              setCurrentPage(1);
+
+            }}
+          >
+            Cancelled
+          </button>
+
+        </div>
+
+        {/* ================= TABLE ================= */}
+
+        <div className="table-responsive shadow rounded">
+
+          <table className="table table-hover align-middle mb-0">
+
+            <thead className="table-dark">
+
+              <tr>
+
+                <th>#</th>
+                <th>Ground</th>
+                <th>Location</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {currentBookings.length > 0 ? (
+
+                currentBookings.map((b, index) => {
+
+                  const status =
+                    getDisplayStatus(b);
+
+                  return (
+
+                    <tr key={b.id}>
+
+                      <td>
+                        {firstIndex + index + 1}
+                      </td>
+
+                      {/* GROUND */}
+                      <td>
+
+                        <div className="d-flex align-items-center gap-3">
+
+                          {/* IMAGE */}
+                          {b.ground?.images?.length > 0 ? (
+
+                            <img
+                              src={`http://localhost:8080/images/${b.ground.images[0]}`}
+                              alt="ground"
+                              style={{
+                                width: "80px",
+                                height: "60px",
+                                objectFit: "cover",
+                                borderRadius: "10px",
+                              }}
+                            />
+
+                          ) : (
+
+                            <img
+                              src="https://via.placeholder.com/80x60"
+                              alt="no-img"
+                              style={{
+                                borderRadius: "10px",
+                              }}
+                            />
+
+                          )}
+
+                          {/* NAME */}
+                          <div>
+
+                            <strong>
+                              {b.ground?.name}
+                            </strong>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+                      {/* LOCATION */}
+                      <td>
+                        {b.ground?.location}
+                      </td>
+
+                      {/* START */}
+                      <td>
+                        {new Date(
+                          b.startTime
+                        ).toLocaleString()}
+                      </td>
+
+                      {/* END */}
+                      <td>
+                        {new Date(
+                          b.endTime
+                        ).toLocaleString()}
+                      </td>
+
+                      {/* PRICE */}
+                      <td>
+                        ₹{b.totalAmount}
+                      </td>
+
+                      {/* STATUS */}
+                      <td>
+
+                        <span
+                          className={`badge ${getBadgeClass(status)}`}
+                        >
+                          {status}
+                        </span>
+
+                      </td>
+
+                      {/* ACTION */}
+                      <td>
+
+                        <button
+                          className={`btn ${getButtonClass(status)}`}
+                          disabled={!canCancel(b)}
+                          onClick={() =>
+                            cancelBooking(b.id)
+                          }
+                        >
+
+                          {canCancel(b)
+                            ? "Cancel"
+                            : status}
+
+                        </button>
+
+                      </td>
+
+                    </tr>
+                  );
+                })
+
+              ) : (
+
+                <tr>
+
+                  <td
+                    colSpan="8"
+                    className="text-center py-4"
+                  >
+                    No bookings found
+                  </td>
+
+                </tr>
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {/* ================= PAGINATION ================= */}
+
+        {totalPages > 1 && (
+
+          <div className="d-flex justify-content-center mt-4">
+
+            <ul className="pagination">
+
+              {/* PREVIOUS */}
+              <li
+                className={`page-item ${
+                  currentPage === 1
+                    ? "disabled"
+                    : ""
+                }`}
+              >
+
+                <button
+                  className="page-link"
+                  onClick={() =>
+                    setCurrentPage(currentPage - 1)
+                  }
+                >
+                  Previous
+                </button>
+
+              </li>
+
+              {/* PAGE NUMBERS */}
+              {[...Array(totalPages)].map(
+                (_, index) => (
+
+                  <li
+                    key={index}
+                    className={`page-item ${
+                      currentPage === index + 1
+                        ? "active"
+                        : ""
+                    }`}
+                  >
+
                     <button
-                      className={`${getButtonStyle(b)} mt-auto w-100`}
-                      style={{ borderRadius: "10px" }}
-                      disabled={isCancelDisabled(b)}
-                      onClick={() => cancelBooking(b.id)}
+                      className="page-link"
+                      onClick={() =>
+                        setCurrentPage(index + 1)
+                      }
                     >
-                      {getButtonText(b)}
+                      {index + 1}
                     </button>
 
-                  </div>
+                  </li>
+                )
+              )}
 
-                </div>
-              </div>
-            ))}
+              {/* NEXT */}
+              <li
+                className={`page-item ${
+                  currentPage === totalPages
+                    ? "disabled"
+                    : ""
+                }`}
+              >
+
+                <button
+                  className="page-link"
+                  onClick={() =>
+                    setCurrentPage(currentPage + 1)
+                  }
+                >
+                  Next
+                </button>
+
+              </li>
+
+            </ul>
+
           </div>
+
         )}
+
       </div>
+
     </div>
   );
 };
