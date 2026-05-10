@@ -95,41 +95,111 @@ export const BookGround = () => {
   };
 
   // ✅ Booking API
-  const handleBooking = async () => {
-    if (availability !== "AVAILABLE") {
-      alert("Please check availability first");
+// ✅ Booking API
+const handleBooking = async () => {
+
+  if (availability !== "AVAILABLE") {
+
+    alert("Please check availability first");
+
+    return;
+  }
+
+  try {
+
+    const user =
+      JSON.parse(localStorage.getItem("userinfo"));
+
+    if (!user) {
+
+      alert("Please login first");
+
+      navigate("/login");
+
       return;
     }
 
-    try {
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+    // FINAL AMOUNT
+    const finalAmount =
+      Math.round(totalAmount);
 
-      if (!user) {
-        alert("Please login first");
-        navigate("/login");
-        return;
-      }
+    // CREATE PAYMENT ORDER
+    const res = await axios.post(
+      `http://localhost:8080/payment/create-order?amount=${finalAmount}`
+    );
 
-      const bookingData = {
-        userId: user.id,
-        groundId: selectedGround.id,
-        startTime,
-        endTime,
-      };
+    const data = res.data;
 
-      await axios.post(
-        "http://localhost:8080/booking/create",
-        bookingData
-      );
+    console.log(data);
 
-      alert("Booking Successful");
-      closeModal();
+    // CASHFREE SDK CHECK
+    if (!window.Cashfree) {
 
-    } catch (err) {
-      console.error(err);
-      alert("Booking failed");
+      alert("Cashfree SDK not loaded");
+
+      return;
     }
-  };
+
+    // INITIALIZE CASHFREE
+    const cashfree =
+      window.Cashfree({
+        mode: "sandbox"
+      });
+
+    // OPEN PAYMENT
+    const paymentResult =
+      await cashfree.checkout({
+
+        paymentSessionId:
+          data.payment_session_id,
+
+        redirectTarget: "_modal"
+      });
+
+    console.log(paymentResult);
+
+    // ✅ PAYMENT SUCCESS CHECK
+    if (
+      paymentResult &&
+      paymentResult.error
+    ) {
+
+      alert("Payment Cancelled or Failed");
+
+      return;
+    }
+
+    // BOOKING DATA
+    const bookingData = {
+
+      userId: user.id,
+
+      groundId: selectedGround.id,
+
+      startTime,
+
+      endTime
+    };
+
+    // SAVE BOOKING ONLY AFTER SUCCESS
+    await axios.post(
+      "http://localhost:8080/booking/create",
+      bookingData
+    );
+
+    alert(
+      "Payment Successful & Booking Confirmed"
+    );
+
+    closeModal();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Payment Failed");
+  }
+};
 
   return (
     <div>
