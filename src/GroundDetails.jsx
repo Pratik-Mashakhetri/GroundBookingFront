@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserNav } from "./UserNav";
-import AdminNAv from "./AdminNAv";
+import MainNavbar from "./MainNavbar";
 
 export const GroundDetails = () => {
 
@@ -11,7 +10,6 @@ export const GroundDetails = () => {
 
   const [ground, setGround] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("userinfo"));
 
   useEffect(() => {
     fetchGround();
@@ -33,7 +31,7 @@ export const GroundDetails = () => {
 
   return (
     <div>
-      {user?.role === "admin" ? <AdminNAv /> : <UserNav />}
+      <MainNavbar />
 
       <div className="container mt-4">
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './css/register.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import MainNavbar from './MainNavbar';
 
 export default function Register() {
     let [isRegistered, setIsRegistered] = useState(true);
@@ -103,7 +104,7 @@ export default function Register() {
     }
     return (
         <div>
-
+            <MainNavbar/> 
             {isRegistered ? <div className="auth-container">
                 <div className="auth-card">
                     <h2>Login</h2>

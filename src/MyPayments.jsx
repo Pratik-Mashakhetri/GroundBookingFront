@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { UserNav } from "./UserNav";
+import MainNavbar from "./MainNavbar";
 
 export const MyPayments = () => {
 
@@ -55,7 +56,7 @@ export const MyPayments = () => {
 
     <div>
 
-      <UserNav />
+     <MainNavbar/>
 
       <div className="container mt-4">
 

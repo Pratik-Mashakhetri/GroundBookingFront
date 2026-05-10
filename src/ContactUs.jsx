@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./css/contactus.css";
 import { UserNav } from "./UserNav";
+import MainNavbar from "./MainNavbar";
 
 const ContactUs = () => {
     const [form, setForm] = useState({
@@ -32,7 +33,7 @@ const ContactUs = () => {
     return (
 
         <div>
-            <UserNav></UserNav>
+<MainNavbar/>
 
             <div className="contact-page">
 

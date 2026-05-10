@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./css/addgrounds.css";
 import AdminNAv from "./AdminNAv";
+import MainNavbar from "./MainNavbar";
 
 export default function AddGrounds() {
   const [ground, setGround] = useState({
@@ -58,7 +59,7 @@ export default function AddGrounds() {
 
   return (
     <div>
-      <AdminNAv />
+<MainNavbar />
       <div className="add-ground-container">
         <form className="ground-form" onSubmit={submitGround}>
           <h2>Add New Ground</h2>

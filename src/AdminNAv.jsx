@@ -11,16 +11,17 @@ export default function AdminNAv() {
 
     let logout = () => {
         localStorage.removeItem("userinfo")
-        navigate("/registeruser")
+        navigate("/")
     }
     return (
         <div>
             <nav className="admin-nav">
-                <div className="nav-left">
-                    <div className="logo">🏟️ GroundBook Admin</div>
+               <div className="nav-left">
+                    <div className="logo">🏟️  Admin </div>
                 </div>
 
                 <ul className="nav-links">
+                    <li><Link to={"/AdminDash"}>Dashboard</Link></li>
                     <li><Link to={"/addGrounds"}>Add Ground</Link></li>
                     <li><Link to={"/manageGrounds"}>Manage Grounds</Link></li>
                     <li><Link to={"/manageUsers"}>Manage Users</Link></li>

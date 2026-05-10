@@ -10,16 +10,17 @@ export const UserNav = () => {
 
 let logout=()=>{
     localStorage.removeItem("userinfo")
-    navigate("/registeruser")
+    navigate("/")
 }
     return (
         <div>
             <nav className="admin-nav">
                 <div className="nav-left">
-                    <div className="logo">🏟️ GroundBook UserDashBoard</div>
+                    <div className="logo">🏟️ User</div>
                 </div>
 
                 <ul className="nav-links">
+                    <li><Link to={"/UserDash"}>Dashboard</Link></li>
                     <li><Link to={"/bookground"}>View Ground</Link></li>
                     <li> <Link to={"/my-bookings"}>My Bookings</Link></li>
                     <li> <Link to={"/my-payments"}>Payment Hisotry</Link></li>

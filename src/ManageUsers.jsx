@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./css/manageusers.css";
 import AdminNAv from "./AdminNAv";
+import MainNavbar from "./MainNavbar";
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -57,7 +58,7 @@ const ManageUsers = () => {
 
   return (
     <div>
-      <AdminNAv />
+      <MainNavbar />
 
       <div className="manage-container">
 
@@ -70,7 +71,7 @@ const ManageUsers = () => {
             style={{ width: "500px" }}
             placeholder="Search user..."
             value={search}
-            
+
             onChange={(e) => setSearch(e.target.value)}
           />
           <button onClick={handleSearch}>Search</button>
@@ -78,7 +79,7 @@ const ManageUsers = () => {
 
         {/* Users Table */}
         <div className="table-container">
-          <table>
+          <table >
             <thead>
               <tr>
                 <th>ID</th>

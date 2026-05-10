@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./css/admincontact.css";
 import AdminNAv from "./AdminNAv";
+import MainNavbar from "./MainNavbar";
 
 const AdminContact = () => {
     const [messages, setMessages] = useState([]);
@@ -47,7 +48,7 @@ const AdminContact = () => {
     return (
 
         <div>
-            <AdminNAv></AdminNAv>
+   <MainNavbar/>
 
             <div className="admin-page">
 

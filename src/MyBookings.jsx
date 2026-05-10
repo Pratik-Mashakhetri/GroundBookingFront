@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserNav } from "./UserNav";
+import MainNavbar from "./MainNavbar";
 
 export const MyBookings = () => {
 
@@ -224,7 +225,7 @@ export const MyBookings = () => {
 
     <div>
 
-      <UserNav />
+      <MainNavbar/>
 
       <div className="container mt-4">
 

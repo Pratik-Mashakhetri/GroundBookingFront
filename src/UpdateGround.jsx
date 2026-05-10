@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import './css/updateground.css'
+import MainNavbar from "./MainNavbar";
 
 export const UpdateGround = () => {
   const { id } = useParams();
@@ -63,6 +64,9 @@ export const UpdateGround = () => {
   };
 
   return (
+    <div> 
+      <MainNavbar/>
+   
    <div className="update-container">
     <div className="update-card shadow">
       <h2 className="text-center mb-4">Update Ground</h2>
@@ -165,5 +169,6 @@ export const UpdateGround = () => {
       </div>
     </div>
   </div>
+   </div>
   );
 };

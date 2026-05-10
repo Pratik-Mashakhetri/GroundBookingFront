@@ -3,6 +3,7 @@ import axios from "axios";
 import AdminNAv from "./AdminNAv";
 import "./css/managegrounds.css";
 import { useNavigate } from "react-router-dom";
+import MainNavbar from "./MainNavbar";
 
 export const ManageGrounds = () => {
 
@@ -120,8 +121,9 @@ export const ManageGrounds = () => {
 
     <div>
 
-      <AdminNAv />
+      <MainNavbar/>
 
+      
       <div className="container mt-4">
 
         <h2 className="text-center mb-4">

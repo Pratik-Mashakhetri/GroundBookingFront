@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import AdminNAv from "./AdminNAv";
+import MainNavbar from "./MainNavbar";
 
 export const ManagePayments = () => {
 
@@ -89,7 +90,7 @@ export const ManagePayments = () => {
 
     <div>
 
-      <AdminNAv />
+        <MainNavbar/>
 
       <div className="container mt-4">
 

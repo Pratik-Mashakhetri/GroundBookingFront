@@ -18,6 +18,9 @@ import { ManageBookings } from './ManageBookings';
 import { ProtectedRoute } from './ProtectedRoutes';
 import { MyPayments } from './MyPayments';
 import { ManagePayments } from './ManagePayments';
+import LandingPage from './LandingPage';
+import MainNavbar from './MainNavbar';
+import PublicNav from './PublicNav';
 function App() {
   return (
     <div className="App">
@@ -130,7 +133,7 @@ function App() {
             }
           />
 
-          <Route path='/' element={<Register />}></Route>
+          <Route path='/' element={<LandingPage/>}></Route>
           <Route path='/registerUser' element={<Register />}></Route>
           <Route path="/ground/:id" element={<GroundDetails />} />
           <Route path='/about-us' element={<AboutUs />}></Route>
