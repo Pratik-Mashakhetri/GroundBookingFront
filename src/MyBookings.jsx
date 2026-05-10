@@ -259,11 +259,10 @@ export const MyBookings = () => {
         <div className="d-flex gap-2 flex-wrap mb-4">
 
           <button
-            className={`btn ${
-              statusFilter === "ALL"
-                ? "btn-dark"
-                : "btn-outline-dark"
-            }`}
+            className={`btn ${statusFilter === "ALL"
+              ? "btn-dark"
+              : "btn-outline-dark"
+              }`}
             onClick={() => {
 
               setStatusFilter("ALL");
@@ -275,11 +274,10 @@ export const MyBookings = () => {
           </button>
 
           <button
-            className={`btn ${
-              statusFilter === "BOOKED"
-                ? "btn-success"
-                : "btn-outline-success"
-            }`}
+            className={`btn ${statusFilter === "BOOKED"
+              ? "btn-success"
+              : "btn-outline-success"
+              }`}
             onClick={() => {
 
               setStatusFilter("BOOKED");
@@ -291,11 +289,10 @@ export const MyBookings = () => {
           </button>
 
           <button
-            className={`btn ${
-              statusFilter === "STARTED"
-                ? "btn-warning"
-                : "btn-outline-warning"
-            }`}
+            className={`btn ${statusFilter === "STARTED"
+              ? "btn-warning"
+              : "btn-outline-warning"
+              }`}
             onClick={() => {
 
               setStatusFilter("STARTED");
@@ -307,11 +304,10 @@ export const MyBookings = () => {
           </button>
 
           <button
-            className={`btn ${
-              statusFilter === "COMPLETED"
-                ? "btn-primary"
-                : "btn-outline-primary"
-            }`}
+            className={`btn ${statusFilter === "COMPLETED"
+              ? "btn-primary"
+              : "btn-outline-primary"
+              }`}
             onClick={() => {
 
               setStatusFilter("COMPLETED");
@@ -323,11 +319,10 @@ export const MyBookings = () => {
           </button>
 
           <button
-            className={`btn ${
-              statusFilter === "CANCELLED"
-                ? "btn-danger"
-                : "btn-outline-danger"
-            }`}
+            className={`btn ${statusFilter === "CANCELLED"
+              ? "btn-danger"
+              : "btn-outline-danger"
+              }`}
             onClick={() => {
 
               setStatusFilter("CANCELLED");
@@ -357,6 +352,7 @@ export const MyBookings = () => {
                 <th>End</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Payment</th>
                 <th>Action</th>
 
               </tr>
@@ -458,6 +454,27 @@ export const MyBookings = () => {
                         </span>
 
                       </td>
+                      <td>
+
+                        {b.paymentStatus === "PAID" && (
+                          <span className="badge bg-success">
+                            Paid
+                          </span>
+                        )}
+
+                        {b.paymentStatus === "REFUND_PENDING" && (
+                          <span className="badge bg-warning text-dark">
+                            Refund Pending
+                          </span>
+                        )}
+
+                        {b.paymentStatus === "REFUNDED" && (
+                          <span className="badge bg-info">
+                            Refunded
+                          </span>
+                        )}
+
+                      </td>
 
                       {/* ACTION */}
                       <td>
@@ -513,11 +530,10 @@ export const MyBookings = () => {
 
               {/* PREVIOUS */}
               <li
-                className={`page-item ${
-                  currentPage === 1
-                    ? "disabled"
-                    : ""
-                }`}
+                className={`page-item ${currentPage === 1
+                  ? "disabled"
+                  : ""
+                  }`}
               >
 
                 <button
@@ -537,11 +553,10 @@ export const MyBookings = () => {
 
                   <li
                     key={index}
-                    className={`page-item ${
-                      currentPage === index + 1
-                        ? "active"
-                        : ""
-                    }`}
+                    className={`page-item ${currentPage === index + 1
+                      ? "active"
+                      : ""
+                      }`}
                   >
 
                     <button
@@ -559,11 +574,10 @@ export const MyBookings = () => {
 
               {/* NEXT */}
               <li
-                className={`page-item ${
-                  currentPage === totalPages
-                    ? "disabled"
-                    : ""
-                }`}
+                className={`page-item ${currentPage === totalPages
+                  ? "disabled"
+                  : ""
+                  }`}
               >
 
                 <button

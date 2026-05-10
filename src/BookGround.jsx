@@ -170,16 +170,18 @@ const handleBooking = async () => {
     }
 
     // BOOKING DATA
-    const bookingData = {
+   const bookingData = {
 
-      userId: user.id,
+  userId: user.id,
 
-      groundId: selectedGround.id,
+  groundId: selectedGround.id,
 
-      startTime,
+  startTime,
 
-      endTime
-    };
+  endTime,
+
+  paymentId: data.order_id
+};
 
     // SAVE BOOKING ONLY AFTER SUCCESS
     await axios.post(

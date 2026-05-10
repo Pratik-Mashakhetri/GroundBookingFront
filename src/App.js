@@ -16,7 +16,8 @@ import ContactUs from './ContactUs';
 import AdminContact from './AdminContact';
 import { ManageBookings } from './ManageBookings';
 import { ProtectedRoute } from './ProtectedRoutes';
-
+import { MyPayments } from './MyPayments';
+import { ManagePayments } from './ManagePayments';
 function App() {
   return (
     <div className="App">
@@ -85,7 +86,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path='/manage-payments'
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <ManagePayments />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/admin-contact'
             element={
@@ -109,6 +117,15 @@ function App() {
             element={
               <ProtectedRoute allowedRole="user">
                 <MyBookings />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/my-payments'
+            element={
+              <ProtectedRoute allowedRole="user">
+                <MyPayments />
               </ProtectedRoute>
             }
           />

@@ -4,15 +4,15 @@ import './css/adminnav.css'
 
 export default function AdminNAv() {
 
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
-    let user=JSON.parse(localStorage.getItem("userinfo"));
+    let user = JSON.parse(localStorage.getItem("userinfo"));
 
 
-let logout=()=>{
-    localStorage.removeItem("userinfo")
-    navigate("/registeruser")
-}
+    let logout = () => {
+        localStorage.removeItem("userinfo")
+        navigate("/registeruser")
+    }
     return (
         <div>
             <nav className="admin-nav">
@@ -25,9 +25,8 @@ let logout=()=>{
                     <li><Link to={"/manageGrounds"}>Manage Grounds</Link></li>
                     <li><Link to={"/manageUsers"}>Manage Users</Link></li>
                     <li><Link to={"/manage-bookings"}>Manage Bookings</Link></li>
-                   
-                    <li>Payments (Pending)</li>
-                     <li><Link to={"/admin-contact"}>Contact Msgs</Link></li>
+                    <li><Link to={"/manage-payments"}>Manage Payments</Link></li>
+                    <li><Link to={"/admin-contact"}>Contact Msgs</Link></li>
                 </ul>
 
                 <div className="nav-right">

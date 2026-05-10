@@ -22,7 +22,7 @@ let logout=()=>{
                 <ul className="nav-links">
                     <li><Link to={"/bookground"}>View Ground</Link></li>
                     <li> <Link to={"/my-bookings"}>My Bookings</Link></li>
-                    <li>Payments (Pending)</li>
+                    <li> <Link to={"/my-payments"}>Payment Hisotry</Link></li>
                     <li><Link to={"/about-us"}>About Us</Link></li>
                     <li><Link to={"/contact-us"} >Contact Us</Link></li>
                 </ul>

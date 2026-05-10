@@ -67,6 +67,35 @@ export const ManageBookings = () => {
       );
     }
   };
+  // ================ Refund Booking ============================
+  const refundBooking = async (bookingId) => {
+
+    const confirmRefund = window.confirm(
+      "Approve refund for this booking?"
+    );
+
+    if (!confirmRefund) return;
+
+    try {
+
+      await axios.put(
+        `http://localhost:8080/booking/refund/${bookingId}`
+      );
+
+      alert("Refund completed successfully");
+
+      fetchBookings();
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert(
+        err.response?.data ||
+        "Refund failed"
+      );
+    }
+  };
 
   // ================= DISPLAY STATUS =================
   const getDisplayStatus = (b) => {
@@ -398,24 +427,36 @@ export const ManageBookings = () => {
                       {/* ACTION */}
                       <td>
 
-                        <button
-                          type="button"
-                          className={`btn ${
-                            canCancel(b)
-                              ? "btn-danger"
-                              : "btn-secondary"
-                          }`}
-                          disabled={!canCancel(b)}
-                          onClick={() =>
-                            cancelBooking(b.id)
-                          }
-                        >
+                        {b.paymentStatus === "REFUND_PENDING" ? (
 
-                          {canCancel(b)
-                            ? "Cancel"
-                            : status}
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => refundBooking(b.id)}
+                          >
+                            Approve Refund
+                          </button>
 
-                        </button>
+                        ) : (
+
+                          <button
+                            type="button"
+                            className={`btn ${canCancel(b)
+                                ? "btn-danger"
+                                : "btn-secondary"
+                              }`}
+                            disabled={!canCancel(b)}
+                            onClick={() =>
+                              cancelBooking(b.id)
+                            }
+                          >
+
+                            {canCancel(b)
+                              ? "Cancel"
+                              : status}
+
+                          </button>
+
+                        )}
 
                       </td>
 
@@ -455,11 +496,10 @@ export const ManageBookings = () => {
 
               {/* PREVIOUS */}
               <li
-                className={`page-item ${
-                  currentPage === 1
-                    ? "disabled"
-                    : ""
-                }`}
+                className={`page-item ${currentPage === 1
+                  ? "disabled"
+                  : ""
+                  }`}
               >
 
                 <button
@@ -483,11 +523,10 @@ export const ManageBookings = () => {
 
                   <li
                     key={index}
-                    className={`page-item ${
-                      currentPage === index + 1
-                        ? "active"
-                        : ""
-                    }`}
+                    className={`page-item ${currentPage === index + 1
+                      ? "active"
+                      : ""
+                      }`}
                   >
 
                     <button
@@ -509,11 +548,10 @@ export const ManageBookings = () => {
 
               {/* NEXT */}
               <li
-                className={`page-item ${
-                  currentPage === totalPages
-                    ? "disabled"
-                    : ""
-                }`}
+                className={`page-item ${currentPage === totalPages
+                  ? "disabled"
+                  : ""
+                  }`}
               >
 
                 <button
